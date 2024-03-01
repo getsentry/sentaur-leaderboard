@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard.Api", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard.Web", "Sentaur.Leaderboard.Web\Sentaur.Leaderboard.Web.csproj", "{538B16E4-C1F4-4F5F-A821-83AFF72E7509}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard", "Sentaur.Leaderboard\Sentaur.Leaderboard.csproj", "{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{538B16E4-C1F4-4F5F-A821-83AFF72E7509}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{538B16E4-C1F4-4F5F-A821-83AFF72E7509}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{538B16E4-C1F4-4F5F-A821-83AFF72E7509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
