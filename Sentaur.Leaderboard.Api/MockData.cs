@@ -1,9 +1,9 @@
 namespace Sentaur.Leaderboard.Api;
 
-internal class Store
+internal class MockData
 {
     public static List<ScoreEntry> MockScores { get; } = new();
-    static Store()
+    static MockData()
     {
         var summaries = new[]
         {
@@ -22,16 +22,5 @@ internal class Store
             .ToArray();
 
         MockScores.AddRange(mock);
-    }
-
-    public Task Add(ScoreEntry entry)
-    {
-        MockScores.Add(entry);
-        return Task.CompletedTask;
-    }
-
-    public Task<IEnumerable<ScoreEntry>> Get(CancellationToken token)
-    {
-        return Task.FromResult(MockScores.AsEnumerable());
     }
 }
