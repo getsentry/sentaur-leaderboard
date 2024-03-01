@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard.Api", "Sentaur.Leaderboard.Api\Sentaur.Leaderboard.Api.csproj", "{DCCFE5A9-10A8-49FC-B0CB-140EFDD2F4FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard.Web", "Sentaur.Leaderboard.Web\Sentaur.Leaderboard.Web.csproj", "{538B16E4-C1F4-4F5F-A821-83AFF72E7509}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -10,5 +14,15 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCCFE5A9-10A8-49FC-B0CB-140EFDD2F4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCCFE5A9-10A8-49FC-B0CB-140EFDD2F4FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCCFE5A9-10A8-49FC-B0CB-140EFDD2F4FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCCFE5A9-10A8-49FC-B0CB-140EFDD2F4FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{538B16E4-C1F4-4F5F-A821-83AFF72E7509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{538B16E4-C1F4-4F5F-A821-83AFF72E7509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{538B16E4-C1F4-4F5F-A821-83AFF72E7509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{538B16E4-C1F4-4F5F-A821-83AFF72E7509}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
