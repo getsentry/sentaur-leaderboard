@@ -2,9 +2,8 @@ namespace Sentaur.Leaderboard.Api;
 
 internal class Store
 {
-    private readonly List<ScoreEntry> _scoreEntries = new();
-
-    public Store()
+    public static List<ScoreEntry> MockScores { get; } = new();
+    static Store()
     {
         var summaries = new[]
         {
@@ -13,6 +12,7 @@ internal class Store
         var mock =  Enumerable.Range(1, 5).Select(index =>
                 new ScoreEntry
                 (
+                    Guid.NewGuid(),
                     summaries[Random.Shared.Next(summaries.Length)],
                     summaries[Random.Shared.Next(summaries.Length)] + "@santry.com",
                     TimeSpan.FromMinutes(Random.Shared.Next(1, 7)),
@@ -21,17 +21,17 @@ internal class Store
                 ))
             .ToArray();
 
-        _scoreEntries.AddRange(mock);
+        MockScores.AddRange(mock);
     }
 
     public Task Add(ScoreEntry entry)
     {
-        _scoreEntries.Add(entry);
+        MockScores.Add(entry);
         return Task.CompletedTask;
     }
 
     public Task<IEnumerable<ScoreEntry>> Get(CancellationToken token)
     {
-        return Task.FromResult(_scoreEntries.AsEnumerable());
+        return Task.FromResult(MockScores.AsEnumerable());
     }
 }

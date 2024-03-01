@@ -1,4 +1,4 @@
-using Sentaur.Leaderboard;
+using Microsoft.EntityFrameworkCore;
 using Sentaur.Leaderboard.Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +19,10 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddDbContextFactory<LeaderboardContext>(
+    options =>
+        options.UseSqlite());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,11 +36,22 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
-var store = new Store(); // TODO: DI
-
-app.MapGet("/score", () =>
+using (var scope = app.Services.CreateScope())
 {
-    return store.Get(CancellationToken.None);
+    var context = scope.ServiceProvider.GetRequiredService<LeaderboardContext>();
+    context.Database.Migrate();
+    context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+    if (!context.ScoreEntries.Any())
+    {
+        context.ScoreEntries.AddRange(Store.MockScores);
+        context.SaveChanges();
+    }
+}
+
+app.MapGet("/score", (LeaderboardContext context, CancellationToken token) =>
+{
+    return context.ScoreEntries
+        .ToListAsync(token);
 })
 .WithName("scores")
 .WithOpenApi();
