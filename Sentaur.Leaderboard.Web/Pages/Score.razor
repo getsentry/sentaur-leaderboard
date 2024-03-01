@@ -47,4 +47,19 @@ else
         // TODO: URL needs to come from config
         scores = await Http.GetFromJsonAsync<ScoreEntry[]>("http://localhost:5203/score");
     }
+
+    ISpan? _pageLoad;
+    protected override void OnInitialized()
+    {
+        SentrySdk.ConfigureScope(s => _pageLoad = s.Transaction = SentrySdk.StartTransaction("Score", "page.load"));
+        base.OnInitialized();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        _pageLoad?.Finish();
+        _pageLoad = null;
+    }
+
 }
