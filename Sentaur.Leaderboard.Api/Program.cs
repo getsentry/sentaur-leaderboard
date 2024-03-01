@@ -4,6 +4,8 @@ using Sentaur.Leaderboard.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry(); // DSN on appsettings.json
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
