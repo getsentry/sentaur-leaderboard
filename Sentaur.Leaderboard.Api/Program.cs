@@ -1,4 +1,5 @@
 using Sentaur.Leaderboard;
+using Sentaur.Leaderboard.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,23 +32,11 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+var store = new Store(); // TODO: DI
+
 app.MapGet("/score", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new ScoreEntry
-        (
-            summaries[Random.Shared.Next(summaries.Length)],
-            summaries[Random.Shared.Next(summaries.Length)] + "@santry.com",
-            TimeSpan.FromMinutes(Random.Shared.Next(1, 7)),
-            Random.Shared.Next(1, 10000),
-            DateTimeOffset.Now.Add(TimeSpan.FromDays(index))
-        ))
-        .ToArray();
-    return forecast;
+    return store.Get(CancellationToken.None);
 })
 .WithName("scores")
 .WithOpenApi();
