@@ -5,6 +5,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetPreflightMaxAge(TimeSpan.FromDays(1));
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -13,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
@@ -23,7 +38,7 @@ var summaries = new[]
 app.MapGet("/score", () =>
 {
     var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new Score
+        new ScoreEntry
         (
             summaries[Random.Shared.Next(summaries.Length)],
             summaries[Random.Shared.Next(summaries.Length)] + "@santry.com",
