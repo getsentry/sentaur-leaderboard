@@ -16,4 +16,8 @@
       <ProjectReference Include="..\Sentaur.Leaderboard\Sentaur.Leaderboard.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+    </ItemGroup>
+
 </Project>
