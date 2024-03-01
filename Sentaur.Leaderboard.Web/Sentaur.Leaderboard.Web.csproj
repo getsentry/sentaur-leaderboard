@@ -13,12 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Sentaur.Leaderboard\Sentaur.Leaderboard.csproj" />
     </ItemGroup>
 

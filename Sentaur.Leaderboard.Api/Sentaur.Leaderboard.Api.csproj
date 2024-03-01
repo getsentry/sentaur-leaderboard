@@ -15,4 +15,10 @@
     <ProjectReference Include="..\Sentaur.Leaderboard\Sentaur.Leaderboard.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>
