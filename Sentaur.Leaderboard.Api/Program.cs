@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sentaur.Leaderboard;
 using Sentaur.Leaderboard.Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +55,12 @@ app.MapGet("/score", (LeaderboardContext context, CancellationToken token) =>
 })
 .WithName("scores")
 .WithOpenApi();
+
+app.MapPost("/score", async (ScoreEntry scoreEntry, LeaderboardContext context, CancellationToken token) =>
+{
+    context.ScoreEntries.Add(scoreEntry);
+    await context.SaveChangesAsync(token);
+});
 
 app.Run();
 
