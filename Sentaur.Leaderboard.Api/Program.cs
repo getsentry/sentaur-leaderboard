@@ -40,7 +40,6 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<LeaderboardContext>();
     context.Database.Migrate();
-    context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     if (!context.ScoreEntries.Any())
     {
         context.ScoreEntries.AddRange(Store.MockScores);
