@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard.Web", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard", "Sentaur.Leaderboard\Sentaur.Leaderboard.csproj", "{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentaur.Leaderboard.AntiCheat", "Sentaur.Leaderboard.AntiCheat\Sentaur.Leaderboard.AntiCheat.csproj", "{BC4B063F-016C-47DF-9ADF-9D2C69F95E88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{396AA3BF-3C4C-4722-9E75-9BD2C31C32DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC4B063F-016C-47DF-9ADF-9D2C69F95E88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC4B063F-016C-47DF-9ADF-9D2C69F95E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC4B063F-016C-47DF-9ADF-9D2C69F95E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC4B063F-016C-47DF-9ADF-9D2C69F95E88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
