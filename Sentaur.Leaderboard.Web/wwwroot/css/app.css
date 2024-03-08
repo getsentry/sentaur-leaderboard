@@ -109,10 +109,7 @@ body {
 
 body {
     --bs-body-bg: #362D59;
-
     font-family: "Rubik", sans-serif;
-
-
 }
 
 header {
@@ -127,4 +124,42 @@ header {
 
 main {
     margin-top: -60px;
+}
+
+@media (max-width: 768px) {
+    main {
+        margin-top: -20px;
+    }
+}
+
+h1 {
+    color: white;
+    margin-bottom: 2rem;
+}
+
+h1 span {
+    background-color: #362D59;
+}
+
+p.notice {
+    margin-bottom: 2rem;
+    font-size: 120%;
+}
+
+p.notice span {
+    display: inline;
+    position: relative;
+    overflow: hidden;
+    color: black;
+}
+
+p.notice span::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 130%;
+    top: -15%;
+    z-index: -1;
+    background-color: #EFB51C;
+    transform: rotate(-2deg);
 }
