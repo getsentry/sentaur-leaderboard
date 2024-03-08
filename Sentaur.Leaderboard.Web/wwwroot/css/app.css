@@ -101,3 +101,30 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+/* 
+body {
+    background: #362D59;
+    color: white;
+} */
+
+body {
+    --bs-body-bg: #362D59;
+
+    font-family: "Rubik", sans-serif;
+
+
+}
+
+header {
+    /**
+    https://stackoverflow.com/questions/600743/how-to-get-div-height-to-auto-adjust-to-background-size
+    */
+    background: url(../img/header.webp) no-repeat bottom center/contain;
+    width: 100%;
+    height: 0;
+    padding-top: 51.6%;
+}
+
+main {
+    margin-top: -60px;
+}

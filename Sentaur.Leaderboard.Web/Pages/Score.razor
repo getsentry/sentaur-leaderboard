@@ -3,38 +3,35 @@
 
 <PageTitle>Leaderboard</PageTitle>
 
-<h1>Scores</h1>
+<h1>Sentaur Survivors • Leaderboard</h1>
 
 @if (scores == null)
 {
     <p>
-        <em>Loading...</em>
-    </p>
+    <em>Loading...</em>
+</p>
 }
 else
 {
     <table class="table">
-        <thead>
+    <thead>
         <tr>
             <th>Name</th>
-            <th>Email</th>
             <th>Duration</th>
             <th>Score</th>
             <th>Timestamp</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         @foreach (var score in scores)
-        {
-            <tr>
-                <td>@score.Name</td>
-                @* TODO: mask email? *@
-                <td>@score.Email</td>
-                <td>@score.Duration</td>
-                <td>@score.Score</td>
-                <td>@score.Timestamp</td>
-            </tr>
-        }
+            {
+                <tr>
+                    <td>@score.Name</td>
+                    <td>@score.Duration</td>
+                    <td>@score.Score</td>
+                    <td>@score.Timestamp</td>
+                </tr>
+            }
         </tbody>
     </table>
 }
