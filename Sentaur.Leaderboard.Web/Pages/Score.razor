@@ -1,11 +1,23 @@
 ﻿@page "/"
 @inject HttpClient Http
 
+@functions {
+    public string FormatTime(TimeSpan duration)
+    {
+        // Implement the logic to format the duration as desired
+        return duration.ToString(@"mm\:ss");
+    }
+}
+
 <PageTitle>Leaderboard</PageTitle>
 
 <h1><span>Sentaur Survivors • Scores</span></h1>
 
-<p class="notice">Winner will be announced at the Sentry Booth at 1PM PT on <span>Friday, March 22, 2024</span>.</p>
+<p class="notice"><span>Win a Steam Deck!</span> Winner will be
+    announced at the Sentry
+    Booth at 1PM PT on <span>Friday,
+        March 22,
+        2024</span>.</p>
 
 @if (scores == null)
 {
@@ -19,9 +31,9 @@ else
     <thead>
         <tr>
             <th>Name</th>
-            <th>Duration</th>
             <th>Score</th>
-            <th>Timestamp</th>
+            <th>Time</th>
+            <th>Recorded</th>
         </tr>
     </thead>
     <tbody>
@@ -29,9 +41,9 @@ else
             {
                 <tr>
                     <td>@score.Name</td>
-                    <td>@score.Duration</td>
                     <td>@score.Score</td>
-                    <td>@score.Timestamp</td>
+                    <td>@FormatTime(score.Duration)</td>
+                    <td>@score.Timestamp.ToString("dddd, h:mm tt")</td>
                 </tr>
             }
         </tbody>
