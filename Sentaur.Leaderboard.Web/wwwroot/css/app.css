@@ -113,23 +113,41 @@ body {
 }
 
 header {
-    /**
-    https://stackoverflow.com/questions/600743/how-to-get-div-height-to-auto-adjust-to-background-size
-    */
-    background: url(../img/header.webp) no-repeat bottom center/contain;
-    width: 100%;
-    height: 0;
-    padding-top: 51.6%;
-    max-height: 800px;
+    position: relative;
 }
 
-main {
-    margin-top: -60px;
+header img.header {
+    width: 100%;
+    z-index: -1;
 }
+
+header img.handheld {
+    position: absolute;
+    bottom: -60px;
+    right: 40px;
+    width: 211px;
+    height: 112px;
+}
+
 
 @media (max-width: 768px) {
-    main {
-        margin-top: -20px;
+    header img.handheld {
+        bottom: -40px;
+        right: 20px;
+        width: 150px;
+        height: 80px;
+    }
+}
+
+@media (min-width: 1024px) {
+    header img.header {
+        margin-top: -100px;
+    }
+
+    header img.handheld {
+        width: 316px;
+        height: 168px;
+        right: 80px;
     }
 }
 
@@ -166,12 +184,7 @@ p.notice span::before {
 }
 
 footer {
-    background: #362D59;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
+    margin-top: 2rem;
     display: grid;
     grid-template-columns: 1fr auto;
     padding: 0 1rem 1rem 2rem;
