@@ -1,12 +1,20 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+<div class="layout">
+    <header>
+        <img class="header" src="/img/header-wide.webp" />
+        <img class="handheld" src="/img/handheld.webp" />
+    </header>
+    <div class="page">
+        <main>
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+    <footer>
+        <p>Play Sentaur Survivors at the Sentry booth at GDC 2024 to be entered into a raffle for a Steam Deck. The
+            winner will be randomly drawn and announced at the Sentry booth on Friday, March 22nd, 2024. The winner must
+            be present in-person at the conference in order to pick up their prize.</p>
+        <img src="/img/sentry-glyph-light.png" />
+    </footer>
 </div>

@@ -1,40 +1,51 @@
 ﻿@page "/"
 @inject HttpClient Http
 
+@functions {
+    public string FormatTime(TimeSpan duration)
+    {
+        // Implement the logic to format the duration as desired
+        return duration.ToString(@"mm\:ss");
+    }
+}
+
 <PageTitle>Leaderboard</PageTitle>
 
-<h1>Scores</h1>
+<h1><span>Sentaur Survivors • Scores</span></h1>
+
+<p class="notice"><span>Win a Steam Deck!</span> Winner will be
+    announced at the Sentry
+    Booth at 1PM PT on <span>Friday,
+        March 22,
+        2024</span>.</p>
 
 @if (scores == null)
 {
     <p>
-        <em>Loading...</em>
-    </p>
+    <em>Loading...</em>
+</p>
 }
 else
 {
     <table class="table">
-        <thead>
+    <thead>
         <tr>
             <th>Name</th>
-            <th>Email</th>
-            <th>Duration</th>
             <th>Score</th>
-            <th>Timestamp</th>
+            <th>Time</th>
+            <th>Recorded</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         @foreach (var score in scores)
-        {
-            <tr>
-                <td>@score.Name</td>
-                @* TODO: mask email? *@
-                <td>@score.Email</td>
-                <td>@score.Duration</td>
-                <td>@score.Score</td>
-                <td>@score.Timestamp</td>
-            </tr>
-        }
+            {
+                <tr>
+                    <td>@score.Name</td>
+                    <td>@score.Score</td>
+                    <td>@FormatTime(score.Duration)</td>
+                    <td>@score.Timestamp.ToString("dddd, h:mm tt")</td>
+                </tr>
+            }
         </tbody>
     </table>
 }
