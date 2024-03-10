@@ -48,7 +48,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         // TODO: URL needs to come from config
-        scores = await Http.GetFromJsonAsync<ScoreEntry[]>("http://localhost:5203/score");
+        const string api =
+            "https://sentaur-leaderboard-f7z2cjcdzq-uc.a.run.app/score";
+            // "http://localhost:5203/score";
+        scores = await Http.GetFromJsonAsync<ScoreEntry[]>(api);
     }
 
     ISpan? _pageLoad;
