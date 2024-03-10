@@ -53,6 +53,7 @@ using (var scope = app.Services.CreateScope())
 app.MapGet("/score", (LeaderboardContext context, CancellationToken token) =>
 {
     return context.ScoreEntries
+        .OrderByDescending(p => p.Score)
         .ToListAsync(token);
 })
 .WithName("scores")
