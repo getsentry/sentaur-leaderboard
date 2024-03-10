@@ -44,7 +44,10 @@ app.UseHttpsRedirection();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<LeaderboardContext>();
-    context.Database.Migrate();
+    if (!context.Database.IsInMemory())
+    {
+        context.Database.Migrate();
+    }
     if (!context.ScoreEntries.Any())
     {
         context.ScoreEntries.AddRange(MockData.MockScores);

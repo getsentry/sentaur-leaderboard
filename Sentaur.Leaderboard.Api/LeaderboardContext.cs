@@ -24,5 +24,6 @@ public class LeaderboardContext : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite($"Data Source={_dbPath}");
+        => options.UseInMemoryDatabase("InMemoryDb");
+    // => options.UseSqlite($"Data Source={_dbPath}");
 }
