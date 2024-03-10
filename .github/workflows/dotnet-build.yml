@@ -19,4 +19,16 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Install wasm workload (macOS)
+      if: matrix.os == 'macos-latest'
+      run: sudo dotnet workload install wasm-tools
+
+    - name: Install wasm workload (Windows/Linux)
+      if: matrix.os != 'macos-latest'
+      run: dotnet workload install wasm-tools
+
     - run: dotnet build -c Release
+
+    - name: publish Web app
+      run: dotnet publish Sentaur.Leaderboard.Web -c Release -o webapp
+
