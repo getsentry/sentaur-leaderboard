@@ -24,7 +24,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContextFactory<LeaderboardContext>(
     options =>
-        options.UseSqlite());
+        options.UseInMemoryDatabase("InMemoryDb")
+        // options.UseSqlite()
+            );
 
 var app = builder.Build();
 
