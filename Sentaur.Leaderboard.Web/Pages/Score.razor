@@ -57,7 +57,7 @@ else
     ISpan? _pageLoad;
     protected override void OnInitialized()
     {
-        SentrySdk.ConfigureScope(s => _pageLoad = s.Transaction = SentrySdk.StartTransaction("Score", "page.load"));
+        SentrySdk.ConfigureScope(s => _pageLoad = s.Transaction = SentrySdk.StartTransaction("leaderboard", "page.load"));
         base.OnInitialized();
     }
 

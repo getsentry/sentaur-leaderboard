@@ -32,6 +32,24 @@
       <a href="" class="reload">Reload</a>
       <a class="dismiss">🗙</a>
     </div>
+    <script
+            src="https://js.sentry-cdn.com/8f3ccd6a8a8e5ba417de8df962236a7d.min.js"
+            crossorigin="anonymous"
+    ></script>
+    <script>
+        Sentry.onLoad(function() {
+            Sentry.init({
+                integrations: [
+                    Sentry.replayIntegration({
+                        // No PII in this site
+                        maskAllText: false,
+                        blockAllMedia: false,
+                    }),
+                ],
+                replaysSessionSampleRate: 1.0,
+            });
+        });
+    </script>
     <script src="_framework/blazor.webassembly.js"></script>
   </body>
 </html>
