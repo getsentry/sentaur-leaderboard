@@ -34,7 +34,7 @@ jobs:
 
     - name: upload web app to artifact
       uses: actions/upload-artifact@v4
-      if: matrix.os == 'macos-latest'
+      if: matrix.os == 'ubuntu-latest'
       with:
         name: webapp
         if-no-files-found: error
