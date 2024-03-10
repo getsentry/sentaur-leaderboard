@@ -14,16 +14,16 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-    - name: Checkout
+    - name: checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - name: Install wasm workload (macOS)
+    - name: install wasm workload (macOS)
       if: matrix.os == 'macos-latest'
       run: sudo dotnet workload install wasm-tools
 
-    - name: Install wasm workload (Windows/Linux)
+    - name: install wasm workload (Windows/Linux)
       if: matrix.os != 'macos-latest'
       run: dotnet workload install wasm-tools
 
@@ -32,3 +32,44 @@ jobs:
     - name: publish Web app
       run: dotnet publish Sentaur.Leaderboard.Web -c Release -o webapp
 
+    - name: upload web app to artifact
+      uses: actions/upload-artifact@v4
+      if: matrix.os == 'macos-latest'
+      with:
+        name: webapp
+        if-no-files-found: error
+        retention-days: 10
+        path: |
+          ${{ github.workspace }}/webapp/
+
+  deploy:
+    needs: build
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      contents: read
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: webapp
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'webapp'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
