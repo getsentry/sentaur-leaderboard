@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -91,8 +90,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
-
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -123,27 +123,17 @@ app.MapPost("/score", [Authorize] async (ScoreEntry scoreEntry, LeaderboardConte
     await context.SaveChangesAsync(token);
 });
 
-app.MapPost("/getToken", [AllowAnonymous](User user) =>
+var tokenHolder = new JwtTokenHolder(builder);
+
+app.MapPost("/token", [AllowAnonymous](User user) =>
 {
-    if (user is not { UserName: "user1", Password: "password1" })
+    if (user.Username.Equals(builder.Configuration["User:Username"]) && user.Password.Equals(builder.Configuration["User:Password"]))
     {
-        return Results.Unauthorized();
+        return Results.Ok(tokenHolder.Token);
     }
-    
-    var issuer = builder.Configuration["Jwt:Issuer"];
-    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Failed to get 'Jwt:Key'")));
-    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-    var token = new JwtSecurityToken(issuer: issuer, signingCredentials: credentials);
-    var tokenHandler = new JwtSecurityTokenHandler();
-        
-    var stringToken = tokenHandler.WriteToken(token);
-
-    return Results.Ok(stringToken);
+    return Results.Unauthorized();
 });
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.Run();
 
