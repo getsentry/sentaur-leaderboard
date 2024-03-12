@@ -1,4 +1,9 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Sentaur.Leaderboard;
 using Sentaur.Leaderboard.Api;
 
@@ -6,8 +11,37 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseSentry(); // DSN on appsettings.json
 
+var securityScheme = new OpenApiSecurityScheme
+{
+    Name = "Authorization",
+    Type = SecuritySchemeType.ApiKey,
+    Scheme = "Bearer",
+    BearerFormat = "JWT",
+    In = ParameterLocation.Header,
+    Description = "JSON Web Token based security",
+};
+
+var securityReq = new OpenApiSecurityRequirement
+{
+    {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        Array.Empty<string>()
+    }
+};
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(o =>
+{
+    o.AddSecurityDefinition("Bearer", securityScheme);
+    o.AddSecurityRequirement(securityReq);
+});
 
 builder.Services.AddCors(options =>
 {
@@ -28,6 +62,24 @@ builder.Services.AddDbContextFactory<LeaderboardContext>(
         // options.UseSqlite()
             );
 
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
+.AddJwtBearer(o =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateAudience = false,
+        ValidateLifetime = false,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Failed to get 'Jwt:Key'")))
+    };
+});
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,8 +90,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
-
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -55,7 +108,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.MapGet("/score", (LeaderboardContext context, CancellationToken token) =>
+app.MapGet("/score", [AllowAnonymous] (LeaderboardContext context, CancellationToken token) =>
 {
     return context.ScoreEntries
         .OrderByDescending(p => p.Score)
@@ -64,10 +117,22 @@ app.MapGet("/score", (LeaderboardContext context, CancellationToken token) =>
 .WithName("scores")
 .WithOpenApi();
 
-app.MapPost("/score", async (ScoreEntry scoreEntry, LeaderboardContext context, CancellationToken token) =>
+app.MapPost("/score", [Authorize] async (ScoreEntry scoreEntry, LeaderboardContext context, CancellationToken token) =>
 {
     context.ScoreEntries.Add(scoreEntry);
     await context.SaveChangesAsync(token);
+});
+
+var tokenHolder = new JwtTokenHolder(builder);
+
+app.MapPost("/token", [AllowAnonymous](User user) =>
+{
+    if (user.Username.Equals(builder.Configuration["User:Username"]) && user.Password.Equals(builder.Configuration["User:Password"]))
+    {
+        return Results.Ok(tokenHolder.Token);
+    }
+
+    return Results.Unauthorized();
 });
 
 app.Run();
