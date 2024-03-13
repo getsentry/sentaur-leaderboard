@@ -135,6 +135,17 @@ app.MapPost("/token", [AllowAnonymous](User user) =>
     return Results.Unauthorized();
 });
 
+app.MapDelete("/score", [Authorize] async (string name, int score, LeaderboardContext context, CancellationToken token) =>
+{
+    var entry = await context.ScoreEntries.FirstOrDefaultAsync(p => p.Name == name && p.Score == score, token);
+    if (entry is not null)
+    {
+        context.ScoreEntries.Remove(entry);
+        await context.SaveChangesAsync(token);
+        return Results.Ok();
+    }
+
+    return Results.Problem($"Failed to remove provided entry with name '{name}' and score '{score}'");
+});
+
 app.Run();
-
-
