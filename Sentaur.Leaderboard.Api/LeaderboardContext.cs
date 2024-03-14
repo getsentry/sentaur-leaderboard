@@ -23,8 +23,6 @@ public class LeaderboardContext : DbContext
                 eb =>
                 {
                     eb.HasKey(nameof(ScoreEntry.Key));
-                    // https://stackoverflow.com/questions/72147210/cant-cast-database-type-character-to-guid
-                    // eb.Property(p => p.Key).HasColumnType("CHAR(36)");
                 });
         base.OnModelCreating(modelBuilder);
     }
