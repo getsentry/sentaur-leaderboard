@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Sentaur.Leaderboard.Api;
 
@@ -8,7 +9,7 @@ public class LeaderboardContext : DbContext
 
     private string _dbPath;
 
-    public LeaderboardContext()
+    public LeaderboardContext(DbContextOptions<LeaderboardContext> options) : base(options)
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
@@ -19,11 +20,30 @@ public class LeaderboardContext : DbContext
     {
         modelBuilder
             .Entity<ScoreEntry>(
-                eb => eb.HasKey(nameof(ScoreEntry.Key)));
+                eb =>
+                {
+                    eb.HasKey(nameof(ScoreEntry.Key));
+                    // https://stackoverflow.com/questions/72147210/cant-cast-database-type-character-to-guid
+                    // eb.Property(p => p.Key).HasColumnType("CHAR(36)");
+                });
         base.OnModelCreating(modelBuilder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseInMemoryDatabase("InMemoryDb");
-    // => options.UseSqlite($"Data Source={_dbPath}");
+#if !DEBUG
+        => options.UseInMemoryDatabase("Leaderboard");
+#else
+        => options.UseNpgsql();
+#endif
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder
+            .Properties<DateTimeOffset>()
+            .HaveConversion<DateTimeOffsetConverter>();
+    }
 }
+
+public class DateTimeOffsetConverter()
+    : ValueConverter<DateTimeOffset, DateTimeOffset>(d => d.ToUniversalTime(),
+    d => d.ToUniversalTime());

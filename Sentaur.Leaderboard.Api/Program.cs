@@ -56,11 +56,16 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddDbContextFactory<LeaderboardContext>(
+builder.Services.AddDbContext<LeaderboardContext>(
     options =>
-        options.UseInMemoryDatabase("InMemoryDb")
-        // options.UseSqlite()
-            );
+    {
+#if !DEBUG
+        options.UseInMemoryDatabase("Leaderboard");
+#else
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Leaderboard"));
+#endif
+
+    });
 
 builder.Services.AddAuthentication(o =>
 {
@@ -127,7 +132,7 @@ var tokenHolder = new JwtTokenHolder(builder);
 
 app.MapPost("/token", [AllowAnonymous](User user) =>
 {
-    if (user.Username.Equals(builder.Configuration["User:Username"]) && user.Password.Equals(builder.Configuration["User:Password"]))
+    if (user.Username?.Equals(builder.Configuration["User:Username"]) is true && user.Password?.Equals(builder.Configuration["User:Password"]) is true)
     {
         return Results.Ok(tokenHolder.Token);
     }
