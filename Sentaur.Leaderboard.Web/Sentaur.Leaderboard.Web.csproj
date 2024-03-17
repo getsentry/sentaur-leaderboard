@@ -21,4 +21,11 @@
       <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+      <SentryOrg>demo</SentryOrg>
+      <SentryProject>sentaur-survivor-leaderboard-app</SentryProject>
+      <SentryUploadSymbols>true</SentryUploadSymbols>
+      <EmbedAllSources>true</EmbedAllSources>
+    </PropertyGroup>
+
 </Project>

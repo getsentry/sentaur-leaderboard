@@ -34,4 +34,11 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <SentryOrg>demo</SentryOrg>
+    <SentryProject>sentaur-survivor-leaderboard-api</SentryProject>
+    <SentryUploadSymbols>true</SentryUploadSymbols>
+    <EmbedAllSources>true</EmbedAllSources>
+  </PropertyGroup>
+
 </Project>
