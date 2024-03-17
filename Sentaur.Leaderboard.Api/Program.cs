@@ -59,7 +59,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<LeaderboardContext>(
     options =>
     {
-#if !DEBUG
+#if DEBUG
         options.UseInMemoryDatabase("Leaderboard");
 #else
         options.UseNpgsql(builder.Configuration.GetConnectionString("Leaderboard"));

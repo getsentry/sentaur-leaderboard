@@ -28,7 +28,7 @@ public class LeaderboardContext : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-#if !DEBUG
+#if DEBUG
         => options.UseInMemoryDatabase("Leaderboard");
 #else
         => options.UseNpgsql();
