@@ -11,4 +11,19 @@
         <PackageReference Include="Google.Cloud.Functions.Hosting" Version="2.0.0" />
         <PackageReference Include="Sentry.Google.Cloud.Functions" Version="4.2.1" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="appsettings.json">
+        <ExcludeFromSingleFile>false</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <SentryOrg>demo</SentryOrg>
+        <SentryProject>sentaur-survivor-anticheat</SentryProject>
+        <SentryUploadSymbols>true</SentryUploadSymbols>
+        <EmbedAllSources>true</EmbedAllSources>
+    </PropertyGroup>
 </Project>
