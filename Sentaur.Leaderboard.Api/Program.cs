@@ -153,4 +153,9 @@ app.MapDelete("/score", [Authorize] async (string name, int score, LeaderboardCo
     return Results.Problem($"Failed to remove provided entry with name '{name}' and score '{score}'");
 });
 
+app.MapGet("/throw", (string? text) =>
+{
+    throw new Exception("Testing exception thrown in endpoint: " + text);
+});
+
 app.Run();
