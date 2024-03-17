@@ -1,0 +1,19 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'us.gcr.io/$PROJECT_ID/sentaur-leaderboard-api:latest',
+      '-t', 'us.gcr.io/$PROJECT_ID/sentaur-leaderboard-api:$COMMIT_SHA',
+      '--cache-from', 'us.gcr.io/$PROJECT_ID/sentaur-leaderboard-api:latest',
+      '--build-arg', 'SENTRY_AUTH_TOKEN=$_SENTAUR_SURVIVOR_SENTRY_AUTH_TOKEN',
+      '--target', 'final',
+      '.'
+    ]
+
+  # Only tag "latest" when on main
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: [
+      '-c',
+      '[[ "$BRANCH_NAME" == "main" ]] && docker push us.gcr.io/$PROJECT_ID/sentaur-leaderboard-api:latest || true',
+    ]

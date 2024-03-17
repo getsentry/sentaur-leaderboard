@@ -6,6 +6,8 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 WORKDIR /src
 COPY ["Sentaur.Leaderboard.Api/Sentaur.Leaderboard.Api.csproj", "Sentaur.Leaderboard.Api/"]
 RUN dotnet restore "Sentaur.Leaderboard.Api/Sentaur.Leaderboard.Api.csproj"
@@ -15,6 +17,8 @@ RUN dotnet build "Sentaur.Leaderboard.Api.csproj" -c $BUILD_CONFIGURATION -o /ap
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 RUN dotnet publish "Sentaur.Leaderboard.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
