@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - '**'
+env:
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
 jobs:
   build:
