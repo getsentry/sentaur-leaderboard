@@ -9,91 +9,78 @@ using Sentaur.Leaderboard.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseSentry(); // DSN on appsettings.json
+// Add Sentry
+builder.WebHost.UseSentry();
 
-var securityScheme = new OpenApiSecurityScheme
-{
-    Name = "Authorization",
-    Type = SecuritySchemeType.ApiKey,
-    Scheme = "Bearer",
-    BearerFormat = "JWT",
-    In = ParameterLocation.Header,
-    Description = "JSON Web Token based security",
-};
-
-var securityReq = new OpenApiSecurityRequirement
-{
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen(o =>
     {
-        new OpenApiSecurityScheme
+        o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
-            Reference = new OpenApiReference
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = "Bearer"
-            }
-        },
-        Array.Empty<string>()
-    }
-};
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerGen(o =>
-{
-    o.AddSecurityDefinition("Bearer", securityScheme);
-    o.AddSecurityRequirement(securityReq);
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetPreflightMaxAge(TimeSpan.FromDays(1));
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JSON Web Token based security",
         });
-});
-
-builder.Services.AddDbContext<LeaderboardContext>(
-    options =>
+        o.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    })
+    .AddCors(options =>
     {
-#if DEBUG
-        options.UseInMemoryDatabase("Leaderboard");
-#else
-        options.UseNpgsql(builder.Configuration.GetConnectionString("Leaderboard"));
-#endif
-
+        options.AddPolicy("AllowAll",
+            policyBuilder =>
+            {
+                policyBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetPreflightMaxAge(TimeSpan.FromDays(1));
+            });
     });
 
-builder.Services.AddAuthentication(o =>
-{
-    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
-.AddJwtBearer(o =>
-{
-    o.TokenValidationParameters = new TokenValidationParameters
+builder.Services
+    .AddDbContext<LeaderboardContext>(
+        options => options.UseNpgsql(builder.Configuration.GetConnectionString("Leaderboard")))
+    .AddAuthorization()
+    .AddAuthentication(o =>
     {
-        ValidateAudience = false,
-        ValidateLifetime = false,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Failed to get 'Jwt:Key'")))
-    };
-});
-builder.Services.AddAuthorization();
+        o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(o =>
+    {
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
+                    ?? throw new InvalidOperationException("Failed to get 'Jwt:Key'")))
+        };
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -102,16 +89,7 @@ app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<LeaderboardContext>();
-    if (!context.Database.IsInMemory())
-    {
-        context.Database.Migrate();
-    }
-    // Insert Mock data only when using in-memory DB
-    else if (!context.ScoreEntries.Any())
-    {
-        context.ScoreEntries.AddRange(MockData.MockScores);
-        context.SaveChanges();
-    }
+    context.Database.Migrate();
 }
 
 app.MapGet("/score", [AllowAnonymous] (LeaderboardContext context, CancellationToken token) =>
