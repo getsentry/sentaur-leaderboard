@@ -106,7 +106,8 @@ using (var scope = app.Services.CreateScope())
     {
         context.Database.Migrate();
     }
-    if (!context.ScoreEntries.Any())
+    // Insert Mock data only when using in-memory DB
+    else if (!context.ScoreEntries.Any())
     {
         context.ScoreEntries.AddRange(MockData.MockScores);
         context.SaveChanges();
