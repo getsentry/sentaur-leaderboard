@@ -35,7 +35,7 @@ else
                     <td>@score.Name</td>
                     <td>@score.Score</td>
                     <td>@score.Duration.ToString(@"mm\:ss")</td>
-                    <td>@TimeZoneInfo.ConvertTimeFromUtc(score.Timestamp.DateTime, TimeZoneInfo.FindSystemTimeZoneById("America/Los_Angeles")).ToString("dddd, h:mm tt")</td>
+                    <td>@score.Timestamp.ToLocalTime().ToString("dddd, h:mm tt")</td>
                 </tr>
             }
         </tbody>
