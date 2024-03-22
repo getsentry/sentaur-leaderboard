@@ -35,7 +35,7 @@ else
                     <td>@score.Name</td>
                     <td>@score.Score</td>
                     <td>@score.Duration.ToString(@"mm\:ss")</td>
-                    <td>@score.Timestamp.ToString("dddd, h:mm tt")</td>
+                    <td>@score.Timestamp.ToLocalTime().ToString("dddd, h:mm tt")</td>
                 </tr>
             }
         </tbody>
@@ -48,13 +48,16 @@ else
     protected override async Task OnInitializedAsync()
     {
         // TODO: URL needs to come from config
-        scores = await Http.GetFromJsonAsync<ScoreEntry[]>("http://localhost:5203/score");
+        const string api =
+            "https://sentaur-leaderboard-f7z2cjcdzq-uc.a.run.app/score";
+            // "http://localhost:5203/score";
+        scores = await Http.GetFromJsonAsync<ScoreEntry[]>(api);
     }
 
     ISpan? _pageLoad;
     protected override void OnInitialized()
     {
-        SentrySdk.ConfigureScope(s => _pageLoad = s.Transaction = SentrySdk.StartTransaction("Score", "page.load"));
+        SentrySdk.ConfigureScope(s => _pageLoad = s.Transaction = SentrySdk.StartTransaction("leaderboard", "pageload"));
         base.OnInitialized();
     }
 

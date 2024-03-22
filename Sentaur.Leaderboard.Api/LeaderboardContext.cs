@@ -1,19 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Sentaur.Leaderboard.Api;
 
-public class LeaderboardContext : DbContext
+public class LeaderboardContext(DbContextOptions<LeaderboardContext> options) : DbContext(options)
 {
     public DbSet<ScoreEntry> ScoreEntries { get; set; } = null!;
-
-    private string _dbPath;
-
-    public LeaderboardContext()
-    {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        _dbPath = Path.Join(path, "scores.db");
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,5 +16,16 @@ public class LeaderboardContext : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite($"Data Source={_dbPath}");
+        => options.UseNpgsql();
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder
+            .Properties<DateTimeOffset>()
+            .HaveConversion<DateTimeOffsetConverter>();
+    }
 }
+
+public class DateTimeOffsetConverter()
+    : ValueConverter<DateTimeOffset, DateTimeOffset>(d => d.ToUniversalTime(),
+    d => d.ToUniversalTime());

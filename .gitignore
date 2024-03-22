@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# output dir for publish blazor app as used on GHA build yml
+webapp/
+
 # dotenv files
 .env
 

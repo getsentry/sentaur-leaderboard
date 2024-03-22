@@ -10,7 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // Blazor built-in integration is in a Draft: https://github.com/getsentry/sentry-dotnet/pull/2569/
 builder.Logging.AddSentry(o =>
 {
-    o.Dsn = "https://780e5db76832242e9c7d7b1a49375cb2@o447951.ingest.sentry.io/4506836940619776";
+    o.Dsn = "https://8f3ccd6a8a8e5ba417de8df962236a7d@o87286.ingest.us.sentry.io/4506888120107008";
     o.EnableTracing = true;
 
     // System.PlatformNotSupportedException: System.Diagnostics.Process is not supported on this platform.

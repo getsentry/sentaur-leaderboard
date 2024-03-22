@@ -1,8 +1,11 @@
 ﻿using System.Globalization;
 using System.Text.Json;
 using Google.Cloud.Functions.Framework;
+using Google.Cloud.Functions.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+
+[assembly: FunctionsStartup(typeof(SentryStartup))]
 
 namespace Sentaur.Leaderboard.AntiCheat;
 
