@@ -132,9 +132,70 @@ app.MapDelete("/score", [Authorize] async (string name, int score, LeaderboardCo
     return Results.Problem($"Failed to remove provided entry with name '{name}' and score '{score}'");
 });
 
+app.MapGet("/lottery", [AllowAnonymous] async (LeaderboardContext context, CancellationToken token) =>
+    {
+        var allResults = await LotteryEntries(context, token);
+        var winner = Random.Shared.GetItems(allResults.ToArray(), 1);
+        return winner;
+    })
+    .WithName("lottery")
+    .WithOpenApi();
+
+
+app.MapGet("/lottery/entries", LotteryEntries)
+    .WithName("lottery-entries")
+    .WithOpenApi();
+
 app.MapGet("/throw", (string? text) =>
 {
     throw new Exception("Testing exception thrown in endpoint: " + text);
 });
 
 app.Run();
+
+async Task<List<ScoreEntry>> LotteryEntries(LeaderboardContext leaderboardContext, CancellationToken cancellationToken)
+{
+    var scoreEntries = await leaderboardContext.ScoreEntries
+        // Exclude Sentry employees
+        .Where(p => !p.Email.EndsWith("@sentry.io"))
+        .OrderByDescending(s => s.Score)
+        // Dedupe (1 entry per player)
+        .GroupBy(s => s.Email)
+        // Get the entry with highest score of each player
+        .Select(g => g.OrderByDescending(p => p.Score).First())
+        .ToListAsync(cancellationToken);
+
+    scoreEntries = scoreEntries.OrderByDescending(s => s.Score).ToList();
+
+    var credit = new List<ScoreEntry>();
+    for (int i = 0; i < 10; i++)
+    {
+        var dupe = () => scoreEntries[i] with
+        {
+            Key = Guid.NewGuid()
+        };
+        if (i == 0) // 15 entries
+        {
+            credit.AddRange(Enumerable.Range(0, 14).Select(_ => dupe()));
+        }
+        if (i == 1) // 10 entries
+        {
+            credit.AddRange(Enumerable.Range(0, 9).Select(_ => dupe()));
+        }
+        if (i == 2) // 7 entries
+        {
+            credit.AddRange(Enumerable.Range(0, 6).Select(_ => dupe()));
+        }
+        if (i == 3) // 5 entries
+        {
+            credit.AddRange(Enumerable.Range(0, 4).Select(_ => dupe()));
+        }
+        if (i is > 3 and < 11) // 2 entries
+        {
+            credit.AddRange(Enumerable.Range(0, 1).Select(_ => dupe()));
+        }
+    }
+
+    scoreEntries.AddRange(credit);
+    return scoreEntries;
+}
