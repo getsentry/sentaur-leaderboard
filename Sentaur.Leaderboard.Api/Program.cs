@@ -96,6 +96,13 @@ app.MapGet("/score", [AllowAnonymous] (LeaderboardContext context, CancellationT
 {
     return context.ScoreEntries
         .OrderByDescending(p => p.Score)
+        .Select(p => new {
+            p.Key,
+            p.Name,
+            p.Score,
+            p.Duration,
+            p.Timestamp
+        })
         .ToListAsync(token);
 })
 .WithName("scores")
@@ -132,7 +139,7 @@ app.MapDelete("/score", [Authorize] async (string name, int score, LeaderboardCo
     return Results.Problem($"Failed to remove provided entry with name '{name}' and score '{score}'");
 });
 
-app.MapGet("/lottery", [AllowAnonymous] async (LeaderboardContext context, CancellationToken token) =>
+app.MapGet("/lottery", [Authorize] async (LeaderboardContext context, CancellationToken token) =>
     {
         var allResults = await LotteryEntries(context, token);
         var winner = Random.Shared.GetItems(allResults.ToArray(), 1);
@@ -142,7 +149,10 @@ app.MapGet("/lottery", [AllowAnonymous] async (LeaderboardContext context, Cance
     .WithOpenApi();
 
 
-app.MapGet("/lottery/entries", LotteryEntries)
+app.MapGet("/lottery/entries", [Authorize] (LeaderboardContext context, CancellationToken token) =>
+    {
+        return LotteryEntries(context, token);
+    })
     .WithName("lottery-entries")
     .WithOpenApi();
 
