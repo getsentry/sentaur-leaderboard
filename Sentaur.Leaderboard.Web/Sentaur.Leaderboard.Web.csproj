@@ -24,7 +24,7 @@
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
       <SentryOrg>demo</SentryOrg>
       <SentryProject>sentaur-survivor-leaderboard-app</SentryProject>
-      <SentryUploadSymbols>true</SentryUploadSymbols>
+<!--      <SentryUploadSymbols>true</SentryUploadSymbols>-->
       <EmbedAllSources>true</EmbedAllSources>
     </PropertyGroup>
 
