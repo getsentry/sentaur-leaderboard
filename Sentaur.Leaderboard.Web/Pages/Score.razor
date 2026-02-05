@@ -16,14 +16,22 @@ else
     <table class="table">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Score</th>
-            <th>Time</th>
-            <th>Recorded</th>
+            <th @onclick="() => SortBy(nameof(ScoreEntry.Name))" style="cursor: pointer;">
+                Name @GetSortIndicator(nameof(ScoreEntry.Name))
+            </th>
+            <th @onclick="() => SortBy(nameof(ScoreEntry.Score))" style="cursor: pointer;">
+                Score @GetSortIndicator(nameof(ScoreEntry.Score))
+            </th>
+            <th @onclick="() => SortBy(nameof(ScoreEntry.Duration))" style="cursor: pointer;">
+                Time @GetSortIndicator(nameof(ScoreEntry.Duration))
+            </th>
+            <th @onclick="() => SortBy(nameof(ScoreEntry.Timestamp))" style="cursor: pointer;">
+                Recorded @GetSortIndicator(nameof(ScoreEntry.Timestamp))
+            </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var score in scores)
+        @foreach (var score in GetSortedScores())
             {
                 <tr>
                     <td>@score.Name</td>
@@ -38,6 +46,8 @@ else
 
 @code {
     private ScoreEntry[]? scores;
+    private string? _sortColumn;
+    private bool _sortAscending = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,6 +56,52 @@ else
             "https://sentaur-leaderboard-f7z2cjcdzq-uc.a.run.app/score";
             // "http://localhost:5203/score";
         scores = await Http.GetFromJsonAsync<ScoreEntry[]>(api);
+    }
+
+    private void SortBy(string column)
+    {
+        if (_sortColumn == column)
+        {
+            _sortAscending = !_sortAscending;
+        }
+        else
+        {
+            _sortColumn = column;
+            _sortAscending = true;
+        }
+    }
+
+    private string GetSortIndicator(string column)
+    {
+        if (_sortColumn != column)
+            return string.Empty;
+
+        return _sortAscending ? "▲" : "▼";
+    }
+
+    private IEnumerable<ScoreEntry> GetSortedScores()
+    {
+        if (scores == null)
+            return Array.Empty<ScoreEntry>();
+
+        IEnumerable<ScoreEntry> sorted = _sortColumn switch
+        {
+            nameof(ScoreEntry.Name) => _sortAscending
+                ? scores.OrderBy(s => s.Name)
+                : scores.OrderByDescending(s => s.Name),
+            nameof(ScoreEntry.Score) => _sortAscending
+                ? scores.OrderBy(s => s.Score)
+                : scores.OrderByDescending(s => s.Score),
+            nameof(ScoreEntry.Duration) => _sortAscending
+                ? scores.OrderBy(s => s.Duration)
+                : scores.OrderByDescending(s => s.Duration),
+            nameof(ScoreEntry.Timestamp) => _sortAscending
+                ? scores.OrderBy(s => s.Timestamp)
+                : scores.OrderByDescending(s => s.Timestamp),
+            _ => scores
+        };
+
+        return sorted;
     }
 
     ISpan? _pageLoad;
